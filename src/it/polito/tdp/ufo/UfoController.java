@@ -40,6 +40,28 @@ public class UfoController {
 
     @FXML
     void handleAnalizza(ActionEvent event) {
+    	String stato = boxStato.getValue();
+    	
+    	if(stato == null) {
+    		txtResult.appendText("Devi selezionare uno stato!");
+    		return;
+    	}
+    	
+    	txtResult.setText("Predecessori:\n");
+    	for (String s: model.getPredecessori(stato))
+    		txtResult.appendText(s+"\n");
+    	
+    	txtResult.appendText("\n\nSuccessori:\n");
+    	for (String s: model.getSuccessori(stato))
+    		txtResult.appendText(s+"\n");
+    	
+    	txtResult.appendText("\n\nRaggiungibili:\n");
+    	for (String s: model.getRaggiungibili(stato))
+    		txtResult.appendText(s+"\n");
+    }
+
+    @FXML
+    void handleAvvistamenti(ActionEvent event) {
     	AnnoCount anno = boxAnno.getValue();
     	
     	if(anno == null) {
@@ -56,13 +78,17 @@ public class UfoController {
     }
 
     @FXML
-    void handleAvvistamenti(ActionEvent event) {
-    	
-    }
-
-    @FXML
     void handleSequenza(ActionEvent event) {
-
+    	String stato = boxStato.getValue();
+    	
+    	if(stato == null) {
+    		txtResult.appendText("Devi selezionare uno stato!");
+    		return;
+    	}
+    	
+    	txtResult.clear();
+    	for (String s: model.getPercorsoMassimo(stato))
+    		txtResult.appendText(s+" - ");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

@@ -18,6 +18,8 @@ public class Model {
 	private List<String> stati;
 	private Graph<String,DefaultEdge> grafo;
 	
+	private List<String> ottima; 
+	
 	public Model() {
 		this.dao = new SightingsDAO();
 	}
@@ -66,12 +68,43 @@ public class Model {
 	
 	public List<String> getRaggiungibili(String stato){
 		List<String> raggiungibili = new LinkedList<>();
-		DepthFirstIterator dp = new DepthFirstIterator(this.grafo);
+		DepthFirstIterator<String, DefaultEdge> dp = new DepthFirstIterator<String, DefaultEdge>(this.grafo);
 		
-	
+		dp.next(); // scarto la sorgente
+		
+		while (dp.hasNext()) {
+			raggiungibili.add(dp.next());
+		}
 		
 		return raggiungibili;
 	}
 	
+	public List<String> getPercorsoMassimo(String partenza) {
+		this.ottima = new LinkedList<String>();
+		List<String> parziale = new LinkedList<String>();
+		parziale.add(partenza);
+		
+		cercaPercorso(parziale);
+		
+		return this.ottima;
+	}
+
+	private void cercaPercorso(List<String> parziale) {
+		
+		if ( parziale.size() >= ottima.size() )
+			ottima = new LinkedList<String>(parziale);
+		
+		List<String> candidati = getSuccessori(parziale.get(parziale.size()-1));
+		
+		for (String candidato: candidati)
+			if (!parziale.contains(candidato)) {
+				parziale.add(candidato);
+				
+				cercaPercorso(parziale);
+				
+				parziale.remove(parziale.size()-1);
+			}
+		
+	}
 	
 }
