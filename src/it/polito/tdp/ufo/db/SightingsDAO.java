@@ -15,14 +15,14 @@ import it.polito.tdp.ufo.model.Sighting;
 public class SightingsDAO {
 	
 	public List<Sighting> getSightings() {
-		String sql = "SELECT * FROM sighting" ;
+		
+		String sql = "SELECT * FROM sighting";
+		
+		List<Sighting> list = new ArrayList<>() ;
+		
 		try {
 			Connection conn = DBConnect.getConnection() ;
-
 			PreparedStatement st = conn.prepareStatement(sql) ;
-			
-			List<Sighting> list = new ArrayList<>() ;
-			
 			ResultSet res = st.executeQuery() ;
 			
 			while(res.next()) {
@@ -46,64 +46,71 @@ public class SightingsDAO {
 			}
 			
 			conn.close();
-			return list ;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null ;
 		}
+		
+		return list;
 	}
 	
 	public List<AnnoCount> getAnni(){
+		
 		String sql = "select Year(datetime) as anno, count(id) as cnt " + 
 				"from sighting " + 
 				"where country=\"us\" " + 
 				"GROUP BY Year(datetime)";
+		
+		List<AnnoCount> anni = new LinkedList<AnnoCount>();
+		
 		try {
 			Connection conn = DBConnect.getConnection() ;
 			PreparedStatement st = conn.prepareStatement(sql) ;
-			List<AnnoCount> anni = new LinkedList<AnnoCount>();
 			ResultSet res = st.executeQuery() ;
 			
 			while(res.next()) {
 				anni.add(new AnnoCount(Year.of(res.getInt("anno")), res.getInt("cnt")));
-				
 			}
+			
 			conn.close();
-			return anni;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null ;
 		}
+		
+		return anni;
 	}
 	
 	public List<String> getStati(Year anno){
+		
 		String sql = "select DISTINCT state " + 
 				"from sighting " + 
 				"where country=\"us\" "
 				+ "and Year(datetime) = ?";
+		
+		List<String> stati = new LinkedList<String>();
+		
 		try {
 			Connection conn = DBConnect.getConnection() ;
 			PreparedStatement st = conn.prepareStatement(sql) ;
 			st.setInt(1, anno.getValue());
-			List<String> stati = new LinkedList<String>();
 			ResultSet res = st.executeQuery() ;
 			
 			while(res.next()) {
 				stati.add(res.getString("state"));
-				
 			}
+			
 			conn.close();
-			return stati;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null ;
 		}
-		
+
+		return stati;
 	}
 
 	public boolean esisteArco(String s1, String s2, Year anno) {
+		
 		String sql = "select count(*) as cnt " + 
 				"from Sighting s1,Sighting s2 " + 
 				"where Year(s1.datetime) = Year(s2.datetime) " + 

@@ -17,6 +17,11 @@ import javafx.scene.control.TextArea;
 public class UfoController {
 	
 	private Model model;
+	
+	public void setModel(Model model) {
+    	this.model = model;
+    	this.boxAnno.getItems().addAll(this.model.getAnni());
+    }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -36,17 +41,18 @@ public class UfoController {
     @FXML
     void handleAnalizza(ActionEvent event) {
     	AnnoCount anno = boxAnno.getValue();
+    	
     	if(anno == null) {
     		txtResult.appendText("Devi selezionare un anno!");
     		return;
     	}
+    	
     	this.model.creaGrafo(anno.getYear());
     	txtResult.appendText("Grafo creato!");
     	txtResult.appendText("\n# vertici: " + this.model.getNvertici());
     	txtResult.appendText("\n# archi: " + this.model.getNarchi());
     	
     	this.boxStato.getItems().addAll(this.model.getStati());
-
     }
 
     @FXML
@@ -64,11 +70,6 @@ public class UfoController {
         assert boxAnno != null : "fx:id=\"boxAnno\" was not injected: check your FXML file 'Ufo.fxml'.";
         assert boxStato != null : "fx:id=\"boxStato\" was not injected: check your FXML file 'Ufo.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Ufo.fxml'.";
-
     }
     
-    public void setModel(Model model) {
-    	this.model = model;
-    	this.boxAnno.getItems().addAll(this.model.getAnni());
-    }
 }
